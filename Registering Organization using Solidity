@@ -1,0 +1,56 @@
+## Registering Organization using Solidity
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract OrganizationRegistry is Ownable {
+    struct Stakeholder {
+        string stakeholderType;
+        uint256 vestingEnd;
+        bool isWhitelisted;
+    }
+
+    struct Organization {
+        address tokenAddress;
+        string name;
+        address[] stakeholderList;
+        mapping(address => Stakeholder) stakeholders;
+    }
+
+    mapping(address => Organization) public organizations;
+
+    constructor() Ownable(msg.sender) {}
+
+    function registerOrganization(address _tokenAddress, string memory _name) public onlyOwner {
+        Organization storage org = organizations[msg.sender];
+        org.tokenAddress = _tokenAddress;
+        org.name = _name;
+    }
+
+    function addStakeholder(address _orgAddress, address _stakeholder, string memory _type, uint256 _vestingEnd) public onlyOwner {
+        Organization storage org = organizations[_orgAddress];
+        org.stakeholderList.push(_stakeholder);
+        org.stakeholders[_stakeholder] = Stakeholder(_type, _vestingEnd, true);
+    }
+
+    function isWhitelisted(address _orgAddress, address _stakeholder) public view returns (bool) {
+        return organizations[_orgAddress].stakeholders[_stakeholder].isWhitelisted;
+    }
+
+    function getVestingEnd(address _orgAddress, address _stakeholder) public view returns (uint256) {
+        return organizations[_orgAddress].stakeholders[_stakeholder].vestingEnd;
+    }
+
+    function getStakeholders(address _orgAddress) public view returns (address[] memory) {
+        return organizations[_orgAddress].stakeholderList;
+    }
+
+    function getOrganization(address _orgAddress) public view returns (address tokenAddress, string memory name, address[] memory stakeholderList) {
+        Organization storage org = organizations[_orgAddress];
+        return (org.tokenAddress, org.name, org.stakeholderList);
+    }
+}
