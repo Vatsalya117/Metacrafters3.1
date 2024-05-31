@@ -1,0 +1,29 @@
+## Vesting schedules for different stakeholders
+
+
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "./OrganizationRegistry.sol"; // Ensure this path is correct based on your file structure
+
+contract Vesting is Ownable {
+    OrganizationRegistry public registry;
+
+    constructor(address _registryAddress) Ownable(msg.sender) {
+        registry = OrganizationRegistry(_registryAddress);
+    }
+
+    function claimTokens(address _orgAddress) public {
+        require(registry.isWhitelisted(_orgAddress, msg.sender), "Not whitelisted");
+        require(block.timestamp >= registry.getVestingEnd(_orgAddress, msg.sender), "Vesting period not ended");
+
+        (address tokenAddress,,) = registry.getOrganization(_orgAddress);
+        IERC20 token = IERC20(tokenAddress);
+        uint256 amount = token.balanceOf(address(this)); // Simplified for example
+        require(amount > 0, "No tokens to claim");
+
+        token.transfer(msg.sender, amount);
+    }
+}
