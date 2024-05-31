@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdraw Tokens</title>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.whitelisted {
+    background-color: green;
+}
+
+.adminOnly {
+    background-color: red;
+}
+
+    </style>
+
+<!--<link rel="stylesheet" href="styles.css">-->
+</head>
+<body>
+<div class="container">
+    <h1>Withdraw Tokens</h1>
+    <button id="withdrawButton">Withdraw Tokens</button>
+</div>
+<script>
+    const withdrawButton = document.getElementById('withdrawButton');
+
+withdrawButton.onclick = async () => {
+    const isWhitelisted = true; // Assume this is retrieved from the smart contract or backend
+
+    if (isWhitelisted) {
+        alert('Withdrawal successful!'); // Placeholder for actual withdrawal logic
+    } else {
+        alert('You are not whitelisted to withdraw tokens.');
+    }
+};
+
+    </script>
+
+<!--<script src="withdraw.js"></script>-->
+</body>
+</html>
